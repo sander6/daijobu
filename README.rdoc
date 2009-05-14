@@ -1,0 +1,7 @@
+= daijobu
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Sander Hartlage. See LICENSE for details.
