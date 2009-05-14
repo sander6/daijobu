@@ -4,12 +4,29 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "daijobu"
-    gem.summary = %Q{TODO}
-    gem.email = "sander@outside.in"
-    gem.homepage = "http://github.com/sander6/daijobu"
-    gem.authors = ["Sander Hartlage"]
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.name        = "daijobu"
+    gem.summary     = "A helper for de/serialization of objects into and out of Tokyo Cabinets"
+    gem.email       = "sander@outside.in"
+    gem.homepage    = "http://github.com/sander6/daijobu"
+    gem.authors     = ["Sander Hartlage"]
+    gem.files       = %w{
+      LICENSE
+      Rakefile
+      README.rdoc
+      lib/daijobu.rb
+      lib/daijobu/adapter.rb
+      lib/daijobu/client.rb
+      lib/daijobu/errors.rb
+      lib/daijobu/scheme.rb
+      lib/daijobu/scheme_set.rb
+      lib/adapters/mem_cache.rb
+      lib/adapters/tokyo_cabinet.rb
+      lib/adapters/tokyo_tyrant.rb
+      lib/schemes/eval.rb
+      lib/schemes/json.rb
+      lib/schemes/marshal.rb
+      lib/schemes/yaml.rb
+    }
   end
 
 rescue LoadError

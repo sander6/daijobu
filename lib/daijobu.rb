@@ -1,0 +1,13 @@
+$:.unshift(File.dirname(__FILE__))
+require 'daijobu/errors'
+require 'daijobu/client'
+require 'daijobu/scheme_set'
+require 'daijobu/scheme'
+require 'daijobu/schemes/marshal'
+require 'daijobu/schemes/json'
+require 'daijobu/schemes/yaml'
+require 'daijobu/schemes/eval'
+require 'daijobu/adapter'
+require 'daijobu/adapters/mem_cache'
+require 'daijobu/adapters/tokyo_cabinet'
+require 'daijobu/adapters/tokyo_tyrant'

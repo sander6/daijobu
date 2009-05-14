@@ -1,6 +1,6 @@
-= daijobu
+= Daijobu
 
-Description goes here.
+A library for easing serialization and deserialzation of data stuffed into Tokyo Cabinet, including flexible and fallback schemes. This will all make more sense once the documentation is written for real.
 
 == Copyright
 
