@@ -21,7 +21,14 @@ Gem::Specification.new do |s|
      "lib/daijobu/client.rb",
      "lib/daijobu/errors.rb",
      "lib/daijobu/scheme.rb",
-     "lib/daijobu/scheme_set.rb"
+     "lib/daijobu/scheme_set.rb",
+     "lib/daijobu/adapters/mem_cache.rb",
+     "lib/daijobu/adapters/tokyo_cabinet.rb",
+     "lib/daijobu/adapters/tokyo_tyrant.rb",
+     "lib/daijobu/schemes/eval.rb",
+     "lib/daijobu/schemes/json.rb",
+     "lib/daijobu/schemes/marshal.rb",
+     "lib/daijobu/schemes/yaml.rb"
   ]
   s.homepage = %q{http://github.com/sander6/daijobu}
   s.rdoc_options = ["--charset=UTF-8"]
