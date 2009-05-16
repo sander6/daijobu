@@ -19,11 +19,18 @@ describe Daijobu::SchemeSet do
       schemes[3].should be_an_instance_of(Daijobu::Scheme::Eval)
     end
     
+    it "should accept an array of schemes" do
+      lambda { Daijobu::SchemeSet.new([:json, :yaml]) }.should_not raise_error
+    end
+    
+    it "should accept a single scheme" do
+      lambda { Daijobu::SchemeSet.new(:json) }.should_not raise_error
+    end
   end
 
   describe "initialization with a specified scheme pattern" do
     before do
-      @scheme_set = Daijobu::SchemeSet.new(:eval, :yaml)
+      @scheme_set = Daijobu::SchemeSet.new([:eval, :yaml])
     end
     
     it "should have the proper schemes in the given order" do
@@ -82,7 +89,7 @@ describe Daijobu::SchemeSet do
   
   describe "#parse" do
     before do
-      @scheme_set = Daijobu::SchemeSet.new(:json)
+      @scheme_set = Daijobu::SchemeSet.new([:json])
       @stringy    = '{ "thing" : 10 }'
       @hashy      = { "thing" => 10 }
     end
@@ -118,7 +125,7 @@ describe Daijobu::SchemeSet do
       @stringy    = '{ "thing" : 10 }'
       @hashy      = { "thing" => 10 }
 
-      @scheme_set     = Daijobu::SchemeSet.new(:marshal, :yaml, :json)
+      @scheme_set     = Daijobu::SchemeSet.new([:marshal, :yaml, :json])
       @schemes        = @scheme_set.instance_variable_get(:@schemes)
       @marshal_scheme = @schemes[0]
       @yaml_scheme    = @schemes[1]
@@ -136,7 +143,7 @@ describe Daijobu::SchemeSet do
   
   describe "#unparse" do
     before do
-      @scheme_set = Daijobu::SchemeSet.new(:json)
+      @scheme_set = Daijobu::SchemeSet.new([:json])
       @stringy    = '{ "thing" : 10 }'
       @hashy      = { "thing" => 10 }
     end
@@ -172,7 +179,7 @@ describe Daijobu::SchemeSet do
       @stringy    = '{ "thing" : 10 }'
       @hashy      = { "thing" => 10 }
 
-      @scheme_set     = Daijobu::SchemeSet.new(:marshal, :yaml, :json)
+      @scheme_set     = Daijobu::SchemeSet.new([:marshal, :yaml, :json])
       @schemes        = @scheme_set.instance_variable_get(:@schemes)
       @marshal_scheme = @schemes[0]
       @yaml_scheme    = @schemes[1]

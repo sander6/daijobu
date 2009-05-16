@@ -5,8 +5,10 @@ module Daijobu
     
     attr_reader :current
     
-    def initialize(*schemes)
-      @schemes = (schemes.empty? ? DEFAULT : schemes).collect { |scheme| Daijobu::Scheme.get(scheme) }
+    def initialize(schemes = nil)
+      schemes = Array(schemes)
+      schemes = DEFAULT if schemes.empty?
+      @schemes = schemes.collect { |scheme| Daijobu::Scheme.get(scheme) }
       @current = 0
     end
   

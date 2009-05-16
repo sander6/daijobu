@@ -1,27 +1,32 @@
 module Daijobu
   class Client
 
-    def initialize(casket, *schemes)
-      @adapter      = Daijobu::Adapter.get(casket)
-      @schemes      = Daijobu::SchemeSet.new(*schemes)
+    def initialize(casket, options = {})
+      @adapter        = Daijobu::Adapter.get(casket)
+      @read_schemes   = Daijobu::SchemeSet.new(options[:schemes] || options[:read])
+      @write_schemes  = Daijobu::SchemeSet.new(options[:schemes] || options[:write])
     end
 
-    def [](key)
-      parse(@adapter.get(key))
+    def [](*keys)
+      __parse__(@adapter.get(*keys.collect { |key| key.to_s }))
     end
 
     def []=(key, value)
-      @adapter.set(key, unparse(value))
+      @adapter.set(key.to_s, __unparse__(value))
+    end
+
+    def method_missing(name, *args)
+      args.empty? ? Daijobu::NamespaceProxy.new(self, name) : Daijobu::NamespaceProxy.new(self, name)[*args]
     end
 
     private
 
-    def parse(str)
-      @schemes.parse(str)
+    def __parse__(str)
+      @read_schemes.parse(str)
     end
 
-    def unparse(obj)
-      @schemes.unparse(obj)
+    def __unparse__(obj)
+      @write_schemes.unparse(obj)
     end
 
   end
