@@ -1,6 +1,65 @@
 = Daijobu
 
-A library for easing serialization and deserialzation of data stuffed into Tokyo Cabinet, including flexible and fallback schemes. This will all make more sense once the documentation is written for real.
+=== "Oh no! Another key-value-store wrapper!"
+
+Don't worry, Daijobu isn't about that. Rather, it wraps the serialization/deserialzation layer of accessing key-value stores, specifically Tokyo Cabinet, but I guess with some work it could work with other things.
+
+=== "So how's it work?"
+
+Make a new, inappropriately-named Daijobu::Client object and give it your store (supported stores are MemCache, Rufus::Tokyo::Cabinet, and Rufus::Tokyo::Tyrant), and then the scheme or schemes you want to use for serialization.
+
+    rufus   = Rufus::Tokyo::Cabinet.new('casket.tch')
+    daijobu = Daijobu::Client.new(rufus, :schemes => :json)
+
+You can now use the regular hash getter and setter methods ([] and []=) without worrying about serialization.
+
+The supported schemes are :marshal (using Marshal), :json (using JSON from the json gem), :yaml (using YAML), :eval (using Kernel::eval), and :raw (using nothing).
+
+Because some schemes are very strict, and sometimes what gets dumped can't be parsed back (for example, unparsing an integer using JSON), you can specify a set of schemes. If one doesn't work, it'll try the next in the list until it succeeds in parsing.
+
+    Daijobu::Client.new(rufus, :schemes => [:json, :yaml, :eval])
+
+Daijobu doesn't do any real format-checking; if, say, Marshal.load throws an error, for whatever reason, it'll just rescue and move on to the next scheme. The success of this gem all hinges on the fact that the supported serialization formats don't have much to do with one another (except for JSON and YAML, of course), and you shouldn't ever end up parsing Ruby code as JSON accidentally, or at least not in unintended ways.
+
+You can set different read and write schemes, too. This would be useful, say, if you wanted to change the serialization format.
+
+    Daijobu::Client.new(rufus, :read => :json, :write => :raw)
+
+One last cool thing that I threw in just because: the key names in a key-value store are often namespaced. You can call these namespaces as methods on a Client object to automatically prepend that namespace to any keys asked for.
+
+    daijobu = Daijobu::Client.new(rufus, :read => :json, :write => :raw)
+    daijobu.namespace['123'] # => looks for 'namespace:123'
+    daijobu.name.space['123'] # => looks for 'name:space:123'
+
+You can set the separator (defaults to ':' because that's what I was using) on the Daijobu::NamespaceProxy class.
+
+    Daijobu::NamespaceProxy.default_separator = '/'
+    daijobu.name.space['123'] # => looks for 'name/space/123'
+
+And a last bit of syntatical sugar: you can leave off the brackets when asking for namespaced keys.
+
+    daijobu.namespace '123' # => looks for 'namespace:123'
+    daijobu.name.space '123' # => looks for 'name:space:123'
+
+=== "Anything else I should know?"
+
+Pretty much only the getting and setting APIs are implemented for the supported adapters, so fancier stuff like iterating over keys isn't there yet.
+
+Multi-get is also kind of janky right now for MemCache, due to a flaw in the memcache-client gem that assumes Marshal.load'ing on get_multi. Keys are therefore fetched one at a time.
+
+=== "What does the future hold for Daijobu?"
+
+I plan to eventually switch out my home-rolled adapters for a more complete and more-intelligently-written backend, like Moneta, but last time I checked it was broken and I needed this gem to do work right now.
+
+Until then, I'm thinking of putting in support for user-defined adapters as a stopgap, basically any object that responds to #get(key) and #set(key, value).
+
+Less of a priority is support for user-defined serialization schemes that respond to #parse(string) and #unparse(object).
+
+I also plan to take a look at ActiveRecord::Base#serialize to see if I can do something with that, because reading and writing YAML is like dying every day.
+
+=== "What's with the name?"
+
+It's my understanding that "daijobu" is Japanese for "I'm fine" or "It's okay". The hardest thing about making gems is deciding what to call them, and that's the first thing that popped into my head.
 
 == Copyright
 
