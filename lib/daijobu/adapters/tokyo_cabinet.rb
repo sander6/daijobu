@@ -8,8 +8,14 @@ module Daijobu
         @store = store
       end
       
-      def get(key)
-        @store[key]
+      def get(*keys)
+        if keys.size == 0
+          nil
+        elsif keys.size == 1
+          @store[keys.first]
+        else
+          @store.lget(keys)
+        end
       end
       
       def set(key, value)

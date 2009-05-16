@@ -8,12 +8,24 @@ module Daijobu
         @store = store
       end
       
-      def get(key)
-        @store.get(key, true)
+      def get(*keys)
+        if keys.size == 0
+          nil
+        elsif keys.size == 1
+          get_one(keys.first)
+        else
+          keys.inject({}) { |agg, key| agg.merge(key => get_one(key)) } 
+        end
       end
       
       def set(key, value)
-        @store.set(key, value, 0, true)
+        @store.add(key, value, 0, true)
+      end
+      
+      private
+      
+      def get_one(key)
+        @store.get(key, true)
       end
       
     end

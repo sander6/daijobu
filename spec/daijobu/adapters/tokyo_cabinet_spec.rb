@@ -12,6 +12,19 @@ describe Daijobu::Adapter::TokyoCabinetAdapter do
       @stubby.expects(:[]).with('key')
       @adapter.get('key')
     end
+    
+    describe "with no arguments" do
+      it "should return nil" do
+        @adapter.get.should be_nil
+      end
+    end
+    
+    describe "with multiple arguments" do
+      it "should call #lget on all the keys" do
+        @stubby.expects(:lget).with(['key1', 'key2', 'key3'])
+        @adapter.get('key1', 'key2', 'key3')
+      end      
+    end
   end
   
   describe "set" do
