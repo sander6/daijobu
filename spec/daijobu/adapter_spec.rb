@@ -6,9 +6,6 @@ describe Daijobu::Adapter do
     
     before do
       Daijobu::Adapter.stubs(:defined?).returns(true)
-      MemCache              = Class.new unless defined?(MemCache)
-      Rufus::Tokyo::Cabinet = Class.new unless defined?(Rufus::Tokyo::Cabinet)
-      Rufus::Tokyo::Tyrant  = Class.new unless defined?(Rufus::Tokyo::Tyrant)
       @casket = stub("fake casket")
     end
     
