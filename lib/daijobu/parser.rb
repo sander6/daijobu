@@ -1,16 +1,42 @@
 module Daijobu
   class Parser
+
+    def self.get(name)
+      respond_to?(name) ? __send__(name) : raise(UnknownScheme)
+    end
+    
+    def self.marshal
+      new(Marshal, :parse => :load, :unparse => :dump)
+    end
+    
+    def self.json
+      require 'json'
+      new(JSON, :parse => :parse, :unparse => :unparse)
+    end
+    
+    def self.yaml
+      require 'yaml'
+      new(YAML, :parse => :load, :unparse => :dump)
+    end
+    
+    def self.eval
+      new(:parse => Proc.new { |str| Kernel::eval(str) }, :unparse => Proc.new { |obj| obj.inspect })
+    end
+    
+    def self.raw
+      new(:parse => Proc.new { |str| str }, :unparse => Proc.new { |obj| obj })
+    end
     
     def initialize(*args, &block)
-      strategies        = args.last.is_a?(Hash) ? args.pop : {}
-      @delegate         = args.shift
-      @parse_strategy   = strategies[:parse]
-      @unparse_strategy = strategies[:unparse]
+      options           = args.last.is_a?(Hash) ? args[-1] : {}
+      @delegate         = args.size == 1 ? nil : args[0]
+      @parse_strategy   = options[:parse]
+      @unparse_strategy = options[:unparse]
       (class << self; self; end).class_eval(&block) if block_given?
     end
     
     def parse(str)
-      strategize(@parse_strategy, str)
+      str.nil? ? nil : strategize(@parse_strategy, str)
     end
     
     def unparse(obj)

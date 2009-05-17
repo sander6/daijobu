@@ -7,6 +7,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'daijobu'
 
 # Some fake contants for the classes and stuff referred to.
+YAML                  = Module.new unless defined?(YAML)
+JSON                  = Module.new unless defined?(JSON)
 MemCache              = Class.new unless defined?(MemCache)
 Rufus                 = Module.new unless defined?(Rufus)
 Rufus::Tokyo          = Module.new unless defined?(Rufus::Tokyo)

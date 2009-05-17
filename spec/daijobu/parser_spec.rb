@@ -3,11 +3,97 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Daijobu::Parser do
   
   before do
-    @stucture = '{ "serialized" : "structure" }'
-    @object   = Object.new
+    @string = '{ "serialized" : "structure" }'
+    @object = Object.new
+  end
+  
+  describe ".get" do
+    it "should return a Daijobu::Parser object" do
+      Daijobu::Parser.get(:marshal).should be_an_instance_of(Daijobu::Parser)
+    end
+    
+    it "should raise an error when passed a name it doesn't know about" do
+      lambda { Daijobu::Parser.get(:buckwild) }.should raise_error(Daijobu::UnknownScheme)
+    end
+    
+    it "should send the given name as a method to itself" do
+      Daijobu::Parser.stubs(:respond_to?).returns(true)
+      Daijobu::Parser.expects(:buckwild)
+      Daijobu::Parser.get(:buckwild)
+    end
+    
+    describe ".marshal" do
+      it "should return a new parser that delegates parsing as :load and unparsing as :dump to Marshal" do
+        Daijobu::Parser.expects(:new).with(Marshal, { :parse => :load, :unparse => :dump })
+        Daijobu::Parser.marshal
+      end
+    end
+    
+    describe ".json" do
+      it "should return a new parser that delegates parsing as :parse and unparsing as :unparse to JSON" do
+        Daijobu::Parser.expects(:new).with(JSON, { :parse => :parse, :unparse => :unparse })
+        Daijobu::Parser.json
+      end
+    end
+    
+    describe ".yaml" do
+      it "should return a new parser that delegates parsing as :load and unparsing as :dump to YAML" do
+        Daijobu::Parser.expects(:new).with(YAML, { :parse => :load, :unparse => :dump })
+        Daijobu::Parser.yaml
+      end
+    end
+    
+    describe ".eval" do
+      it "should return a new parser that delegates parsing and unparsing as some procs" do
+        Daijobu::Parser.expects(:new).with(instance_of(Hash))
+        Daijobu::Parser.eval
+      end
+      
+      describe "should return a parser that" do
+        before do
+          @parser = Daijobu::Parser.eval
+        end
+
+        it "should eval the string given to parse" do
+          Kernel.expects(:eval).with(@string)
+          @parser.parse(@string)
+        end
+        
+        it "should inspect the object to unparse" do
+          @object.expects(:inspect)
+          @parser.unparse(@object)
+        end
+      end
+    end
+    
+    describe ".raw" do
+      it "should return a new parser that delegates parsing and unparsing as some procs" do
+        Daijobu::Parser.expects(:new).with(instance_of(Hash))
+        Daijobu::Parser.raw
+      end
+      
+      describe "should return a parser that" do
+        before do
+          @parser = Daijobu::Parser.raw
+        end
+        
+        it "should return the string given to parse" do
+          @parser.parse(@string).should == @string
+        end
+        
+        it "should return the object given to unparse" do
+          @parser.unparse(@object).should == @object
+        end
+      end
+    end
   end
   
   describe "parsing" do
+    it "should return nil when trying to parse nil" do
+      @parser = Daijobu::Parser.new
+      @parser.parse(nil).should be_nil
+    end
+    
     describe "with a symbol strategy" do
       before do
         @symbol = :load
