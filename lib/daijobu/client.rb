@@ -3,6 +3,18 @@ module Daijobu
   # The unfortunately-named Daijobu::Client is the serialization wrapper for key-value stores.
   class Client
 
+    @@default_separator = ':'
+    
+    # Getter for the default separator. Default is ':'
+    def self.default_separator
+      @@default_separator
+    end
+    
+    # Setter for the default separator. I use ':', but a lot of people like '/'.
+    def self.default_separator=(separator)
+      @@default_separator = separator
+    end
+
     # Client.new takes a key-value store as its first argument, and then a hash of serialization schemes.
     #
     # Options:
@@ -13,6 +25,8 @@ module Daijobu
       @adapter        = Daijobu::Adapter.get(casket)
       @read_schemes   = Daijobu::SchemeSet.new(options[:schemes] || options[:read])
       @write_schemes  = Daijobu::SchemeSet.new(options[:schemes] || options[:write])
+      @namespace      = nil
+      @separator      = nil
     end
 
     # Getter for keys. The actual getting method is handled by the specific Adapter object.
@@ -26,20 +40,26 @@ module Daijobu
       @adapter.set(key.to_s, __unparse__(value))
     end
 
-    # Any missing method is assumed to be a namespace for keys to get. The NamespaceProxy object
-    # returned also implements the same kind of method_missing, so namespaces can be chained together.
+    # Any missing method is assumed to be a namespace for keys to get. Returns self, so
+    # namespaces can be chained together.
     #
-    #     client.namespace['key']           # => gets key 'namespace:key'
-    #     client.name.space['key']          # => gets key 'name:space:key'
-    #     client.namespace['key'] = 'value' # => sets key 'namespace:key'
+    #     client.namespace['key']             # => gets key 'namespace:key'
+    #     client.name.space['key']            # => gets key 'name:space:key'
+    #     client.namespace['key'] = 'value'   # => sets key 'namespace:key'
     #
-    # As an added bit of syntactic sugar, you can leave the brackets off when getting keys this way.
+    # If you have mixed separators in your keys, or don't want to fiddle around with the
+    # class-level default_separator, you can pass the separator to use as an argument to
+    # any missing method.
     #
-    #     client.namespace 'key' # => same as client.namespace['key']
+    #     client.name('/').space('-')['key']  # => gets key 'name/space-key'
     #
-    # See NamespaceProxy for more details about setting the separator.
-    def method_missing(name, *args)
-      args.empty? ? Daijobu::NamespaceProxy.new(self, name) : Daijobu::NamespaceProxy.new(self, name)[*args]
+    # The last separator mentioned will be use for subsequent separating.
+    #
+    #     client.some('/').really(':').long.name('-').space['key'] # => gets key 'some/really:long:name-space-key'
+    def method_missing(namespace, separator = nil, *args, &block)
+      @namespace = "#{@namespace}#{@separator}#{namespace}"
+      @separator = separator || @separator || @@default_separator
+      self
     end
 
     private

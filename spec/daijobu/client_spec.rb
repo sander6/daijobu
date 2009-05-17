@@ -105,22 +105,29 @@ describe Daijobu::Client do
       end
     end
     
-    describe "method_missing" do
+    describe "namespacing via missing methods" do
       
-      describe "with no arguments" do
-        it "should return a namespace proxy with namespace as the missing method" do
-          proxy = @daijobu.prefix
-          proxy.should be_an_instance_of(Daijobu::NamespaceProxy)
-          proxy.instance_variable_get(:@namespace).should == 'prefix'
-        end
+      it "should return self" do
+        @daijobu.namespace.should == @daijobu
+      end
+      
+      it "should append the method name as a key namespace" do
+        @daijobu.namespace.instance_variable_get(:@namespace).should == 'namespace'
+      end
+      
+      it "should chain namespaces together for multiple invocations" do
+        @daijobu.name.space.instance_variable_get(:@namespace).should == 'name:space'
       end
       
       describe "with arguments" do
-        it "should call #[] on the proxy with the arguments" do
-          proxy = stub('fake-daijobu-proxy!')
-          Daijobu::NamespaceProxy.expects(:new).with(@daijobu, :prefix).returns(proxy)
-          proxy.expects(:[]).with('key')
-          @daijobu.prefix('key')
+        it "should set the separator to the given argument" do
+          @daijobu.namespace('/').instance_variable_get(:@separator).should == '/'
+        end
+        
+        it "should use the last mentioned separator for subsequent namespacing" do
+          namespacey = @daijobu.some('/').long.name('-').space
+          namespacey.instance_variable_get(:@namespace).should == 'some/long/name-space'
+          namespacey.instance_variable_get(:@separator).should == '-'
         end
       end
     end
