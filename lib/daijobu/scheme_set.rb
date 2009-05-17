@@ -7,12 +7,15 @@ module Daijobu
     
     attr_reader :current
 
-    # SchemeSet.new takes a single symbol or array of symbols and initializes a new Scheme
+    # SchemeSet.new takes a single symbol or array of symbols and initializes a new Parser
     # object of the appropriate type for each one.
     def initialize(schemes = nil)
+      @schemes = []
       schemes = Array(schemes)
       schemes = DEFAULT if schemes.empty?
-      @schemes = schemes.collect { |scheme| Daijobu::Scheme.get(scheme) }
+      schemes.each do |scheme|
+        @schemes << (scheme.is_a?(Daijobu::Parser) ? scheme : Daijobu::Parser.get(scheme))
+      end
       @current = 0
     end
   

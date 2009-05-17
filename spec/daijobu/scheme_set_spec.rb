@@ -2,7 +2,17 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Daijobu::SchemeSet do
   
-  describe "initialization" do
+  describe "on initialization" do
+    it "should have the default set of schemes" do      
+      Daijobu::Parser.expects(:get).with(:marshal)
+      Daijobu::Parser.expects(:get).with(:json)
+      Daijobu::Parser.expects(:get).with(:yaml)
+      Daijobu::Parser.expects(:get).with(:eval)
+      Daijobu::SchemeSet.new
+    end  
+  end
+
+  describe "initialization" do    
     before do
       @scheme_set = Daijobu::SchemeSet.new
     end
@@ -10,15 +20,7 @@ describe Daijobu::SchemeSet do
     it "should set current to 0" do
       @scheme_set.current.should == 0
     end
-    
-    it "should have the default set of schemes" do
-      schemes = @scheme_set.instance_variable_get(:@schemes)
-      schemes[0].should be_an_instance_of(Daijobu::Scheme::Marshal)
-      schemes[1].should be_an_instance_of(Daijobu::Scheme::JSON)
-      schemes[2].should be_an_instance_of(Daijobu::Scheme::YAML)
-      schemes[3].should be_an_instance_of(Daijobu::Scheme::Eval)
-    end
-    
+        
     it "should accept an array of schemes" do
       lambda { Daijobu::SchemeSet.new([:json, :yaml]) }.should_not raise_error
     end
@@ -35,8 +37,6 @@ describe Daijobu::SchemeSet do
     
     it "should have the proper schemes in the given order" do
       schemes = @scheme_set.instance_variable_get(:@schemes)
-      schemes[0].should be_an_instance_of(Daijobu::Scheme::Eval)
-      schemes[1].should be_an_instance_of(Daijobu::Scheme::YAML)      
     end
   end
   
@@ -96,7 +96,7 @@ describe Daijobu::SchemeSet do
 
     describe "assuming that the string can be parsed" do
       before do
-        Daijobu::Scheme::JSON.any_instance.stubs(:parse).returns(@hashy)
+        Daijobu::Parser.any_instance.stubs(:parse).returns(@hashy)
       end
       
       it "should reset" do
@@ -111,7 +111,7 @@ describe Daijobu::SchemeSet do
     
     describe "assuming that the string can't be parsed" do
       before do
-        Daijobu::Scheme::JSON.any_instance.stubs(:parse).raises(Daijobu::Error)
+        Daijobu::Parser.any_instance.stubs(:parse).raises(Daijobu::Error)
       end
       
       it "should raise the given error" do
@@ -150,7 +150,7 @@ describe Daijobu::SchemeSet do
 
     describe "assuming that the object can be unparsed" do
       before do
-        Daijobu::Scheme::JSON.any_instance.stubs(:unparse).returns(@stringy)
+        Daijobu::Parser.any_instance.stubs(:unparse).returns(@stringy)
       end
       
       it "should return the unparsed entity" do
@@ -165,7 +165,7 @@ describe Daijobu::SchemeSet do
     
     describe "assuming that the object can't be unparsed" do
       before do
-        Daijobu::Scheme::JSON.any_instance.stubs(:unparse).raises(Daijobu::Error)
+        Daijobu::Parser.any_instance.stubs(:unparse).raises(Daijobu::Error)
       end
       
       it "should raise the given error" do
