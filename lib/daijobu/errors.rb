@@ -14,4 +14,8 @@ module Daijobu
   # Raised when all of the (un)parsing schemes fail.
   class NoFallbackScheme < Daijobu::Error; end
   
+  class MissingDelegate < Daijobu::Error; end
+  
+  class InvalidStrategy < Daijobu::Error; end
+  
 end
