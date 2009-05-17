@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{daijobu}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sander Hartlage"]
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     "lib/daijobu/adapter.rb",
     "lib/daijobu/client.rb",
     "lib/daijobu/errors.rb",
-    "lib/daijobu/namespace_proxy.rb",
     "lib/daijobu/scheme.rb",
     "lib/daijobu/scheme_set.rb",
     "lib/daijobu/adapters/mem_cache.rb",
@@ -44,7 +43,6 @@ Gem::Specification.new do |s|
     "spec/daijobu/adapters/tokyo_tyrant_spec.rb",
     "spec/daijobu/client_spec.rb",
     "spec/daijobu/errors_spec.rb",
-    "spec/daijobu/namespace_proxy_spec.rb",
     "spec/daijobu/scheme_set_spec.rb",
     "spec/daijobu/scheme_spec.rb",
     "spec/daijobu/schemes/eval_spec.rb",
