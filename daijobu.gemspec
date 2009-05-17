@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{daijobu}
-  s.version = "0.2.2"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sander Hartlage"]
@@ -20,16 +20,11 @@ Gem::Specification.new do |s|
     "lib/daijobu/adapter.rb",
     "lib/daijobu/client.rb",
     "lib/daijobu/errors.rb",
-    "lib/daijobu/scheme.rb",
+    "lib/daijobu/parser.rb",
     "lib/daijobu/scheme_set.rb",
     "lib/daijobu/adapters/mem_cache.rb",
     "lib/daijobu/adapters/tokyo_cabinet.rb",
-    "lib/daijobu/adapters/tokyo_tyrant.rb",
-    "lib/daijobu/schemes/eval.rb",
-    "lib/daijobu/schemes/json.rb",
-    "lib/daijobu/schemes/marshal.rb",
-    "lib/daijobu/schemes/raw.rb",
-    "lib/daijobu/schemes/yaml.rb"
+    "lib/daijobu/adapters/tokyo_tyrant.rb"
   ]
   s.homepage = %q{http://github.com/sander6/daijobu}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -43,13 +38,8 @@ Gem::Specification.new do |s|
     "spec/daijobu/adapters/tokyo_tyrant_spec.rb",
     "spec/daijobu/client_spec.rb",
     "spec/daijobu/errors_spec.rb",
+    "spec/daijobu/parser_spec.rb",
     "spec/daijobu/scheme_set_spec.rb",
-    "spec/daijobu/scheme_spec.rb",
-    "spec/daijobu/schemes/eval_spec.rb",
-    "spec/daijobu/schemes/json_spec.rb",
-    "spec/daijobu/schemes/marshal_spec.rb",
-    "spec/daijobu/schemes/raw_spec.rb",
-    "spec/daijobu/schemes/yaml_spec.rb",
     "spec/spec_helper.rb"
   ]
 
