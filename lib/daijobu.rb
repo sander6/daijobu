@@ -1,7 +1,6 @@
 $:.unshift(File.dirname(__FILE__))
 require 'daijobu/errors'
 require 'daijobu/client'
-require 'daijobu/namespace_proxy'
 require 'daijobu/scheme_set'
 require 'daijobu/scheme'
 require 'daijobu/schemes/eval'
