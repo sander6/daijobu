@@ -25,21 +25,23 @@ You can set different read and write schemes, too. This would be useful, say, if
 
     Daijobu::Client.new(rufus, :read => :json, :write => :raw)
 
-One last cool thing that I threw in just because: the key names in a key-value store are often namespaced. You can call these namespaces as methods on a Client object to automatically prepend that namespace to any keys asked for.
+One last cool thing that I threw in just because: the key names in a key-value store are often namespaced, so you can call these namespaces as methods on a Client object to automatically prepend that namespace to any keys asked for.
 
-    daijobu = Daijobu::Client.new(rufus, :read => :json, :write => :raw)
     daijobu.namespace['123'] # => looks for 'namespace:123'
     daijobu.name.space['123'] # => looks for 'name:space:123'
 
-You can set the separator (defaults to ':' because that's what I was using) on the Daijobu::NamespaceProxy class.
+You can set the separator (defaults to ':' because that's what I was using) on the Daijobu::Client class.
 
-    Daijobu::NamespaceProxy.default_separator = '/'
-    daijobu.name.space['123'] # => looks for 'name/space/123'
+    Daijobu::Client.default_separator = '/'
+    daijobu.name.space['123'] # => 'name/space/123'
 
-And a last bit of syntatical sugar: you can leave off the brackets when asking for namespaced keys.
+Or you can set it per-invocation:
 
-    daijobu.namespace '123' # => looks for 'namespace:123'
-    daijobu.name.space '123' # => looks for 'name:space:123'
+    daijobu.name('/').space(':')['123'] # => 'name/space:123'
+    
+If this is the case, it'll keep using the last separator mentioned for subsequent namespacing.
+
+    daijobu.some('/').long(':').name.space['123'] # => 'some/long:name:space:123'
 
 === "Anything else I should know?"
 
