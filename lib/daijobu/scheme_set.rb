@@ -34,7 +34,7 @@ module Daijobu
       @current = 0
     end
 
-    # Tries the parse (load) the string with each scheme in turn.
+    # Tries to parse (load) the string with each scheme in turn.
     # Assumes (defensibly) that parsing failed if any non Daijobu::Error exceptions are raised
     # and moves on to the next scheme.
     def parse(str)
@@ -51,7 +51,7 @@ module Daijobu
       obj
     end
     
-    # Tries the unparse (dump) the string with each scheme in turn.
+    # Tries to unparse (dump) the object with each scheme in turn.
     # Assumes (defensibly) that unparsing failed if any non Daijobu::Error exceptions are raised
     # and moves on to the next scheme.    
     def unparse(obj)
